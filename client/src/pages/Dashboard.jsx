@@ -9,10 +9,16 @@ import { ModalComponent } from "../components/Modal";
 import { PatientForm } from "../components/PatientForm";
 import { withAuthenticationRequired } from "@auth0/auth0-react";
 import CircularProgress from '@mui/material/CircularProgress';
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Dashboard = () => {
     const [openAddPatientModal, setOpenAddPatientModal] = useState(false);
-    const { loading, data } = useQuery(GET_ALL_PATIENTS);
+    const { user } = useAuth0();
+    const { loading, data } = useQuery(GET_ALL_PATIENTS, {
+        variables: {
+            providerID: user?.sub?.split('|')[1]
+        }
+    });
 
     const handleCloseAddPatientModal = () => setOpenAddPatientModal(false);
 

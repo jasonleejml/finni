@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 
 export const ADD_PATIENT = gql`
     mutation addPatient(
+        $providerID: String!,
         $firstName: String!,
         $middleName: String,
         $lastName: String!,
@@ -10,6 +11,7 @@ export const ADD_PATIENT = gql`
         $additionalFields: [AdditionalFieldInput!]
     ) {
         addPatient(
+            providerID: $providerID,
             firstName: $firstName,
             middleName: $middleName,
             lastName: $lastName,

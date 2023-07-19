@@ -1,8 +1,12 @@
 import { gql } from "@apollo/client";
 
 export const GET_ALL_PATIENTS = gql`
-    query getAllPatients {
-        getAllPatients {
+    query getAllPatients(
+        $providerID: String!
+    ) {
+        getAllPatients(
+            providerID: $providerID,
+        ) {
             id,
             firstName,
             middleName,

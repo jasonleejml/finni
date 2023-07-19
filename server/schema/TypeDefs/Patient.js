@@ -14,6 +14,7 @@ const PatientType = new GraphQLObjectType({
     name: "Patient",
     fields: () => ({
         id: { type: new GraphQLNonNull(GraphQLID) },
+        providerID: { type: new GraphQLNonNull(GraphQLString) },
         firstName: { type: new GraphQLNonNull(GraphQLString) },
         middleName: { type: GraphQLString },
         lastName: { type: new GraphQLNonNull(GraphQLString) },

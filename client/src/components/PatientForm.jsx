@@ -10,6 +10,7 @@ import { ADD_PATIENT } from "../mutations/patientMutations";
 import { useMutation } from "@apollo/client";
 import { GET_ALL_PATIENTS } from "../queries/patientQueries";
 import { toast } from "react-toastify";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const initialRequiredFields = [
     {
@@ -81,6 +82,9 @@ export const addressFieldsTemplate = [
 ]
 
 export const PatientForm = ({ type, close, defaultValues, patientID, update }) => {
+    const { user } = useAuth0();
+    const providerID = user?.sub?.split('|')[1];
+
     const { control, handleSubmit } = useForm({
         defaultValues: defaultValues ?? {
             firstName: "",
@@ -103,7 +107,7 @@ export const PatientForm = ({ type, close, defaultValues, patientID, update }) =
             close();
             toast.success("Created the new patient successfully!")
         },
-        refetchQueries: [{ query: GET_ALL_PATIENTS }]
+        refetchQueries: [{ query: GET_ALL_PATIENTS, variables: { providerID } }]
     })
 
     const { fields: addressFields, append: addressAppend, remove: addressRemove } = useFieldArray({
@@ -133,6 +137,7 @@ export const PatientForm = ({ type, close, defaultValues, patientID, update }) =
             :
             addPatient({
                 variables: {
+                    providerID,
                     firstName,
                     middleName,
                     lastName,

@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import { Theme } from "../theme";
 
 export const LoginPage = () => {
-    const { loginWithRedirect, user, isAuthenticated } = useAuth0();
+    const { loginWithRedirect, isAuthenticated } = useAuth0();
     const navigate = useNavigate();
 
     useEffect(() => {

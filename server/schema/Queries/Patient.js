@@ -1,11 +1,16 @@
-const { GraphQLList, GraphQLID } = require("graphql");
+const { GraphQLList, GraphQLID, GraphQLString, GraphQLNonNull } = require("graphql");
 const Patient = require("../../models/Patient");
 const { PatientType } = require("../TypeDefs/Patient");
 
 const GET_ALL_PATIENTS = {
     type: new GraphQLList(PatientType),
+    args: {
+        providerID: { type: new GraphQLNonNull(GraphQLString) },
+    },
     resolve(parent, arg) {
-        return Patient.find();
+        return Patient.find({
+            providerID: arg.providerID,
+        });
     }
 }
 

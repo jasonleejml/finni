@@ -32,6 +32,7 @@ const AddressInputType = new GraphQLInputObjectType({
 const ADD_PATIENT = {
     type: PatientType,
     args: {
+        providerID: { type: new GraphQLNonNull(GraphQLString)},
         firstName: { type: new GraphQLNonNull(GraphQLString) },
         middleName: { type: GraphQLString },
         lastName: { type: new GraphQLNonNull(GraphQLString) },
@@ -40,9 +41,10 @@ const ADD_PATIENT = {
         additionalFields: { type: new GraphQLList(AdditionalFieldInputType) }
     },
     resolve(parent, args) {
-        const { firstName, middleName, lastName, dob, address, additionalFields } = args;
+        const { providerID, firstName, middleName, lastName, dob, address, additionalFields } = args;
 
         const patient = new Patient({
+            providerID,
             firstName,
             middleName,
             lastName,

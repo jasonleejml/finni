@@ -13,6 +13,7 @@ import { DELETE_PATIENT } from "../mutations/patientMutations";
 import { useMutation } from "@apollo/client";
 import { GET_ALL_PATIENTS } from "../queries/patientQueries";
 import { toast } from "react-toastify";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const renderHeader = (params) => (
     <Typography sx={{ fontWeight: 'bold' }}>{params}</Typography>
@@ -22,9 +23,12 @@ export const Table = ({ data, loading }) => {
     const [openViewPatientModal, setOpenViewPatientModal] = useState(false);
     const [targetPatientID, setTargetPatientID] = useState("");
 
+    const { user } = useAuth0();
+    const providerID = user?.sub?.split('|')[1];
+
     const [deletePatient] = useMutation(DELETE_PATIENT, {
         onCompleted: () => toast.success("Deleted the patient successfully!"),
-        refetchQueries: [{ query: GET_ALL_PATIENTS }]
+        refetchQueries: [{ query: GET_ALL_PATIENTS, variables: { providerID } }]
     })
 
     const handlePatientModal = (id) => {
@@ -173,7 +177,7 @@ export const Table = ({ data, loading }) => {
                 columns={columns}
                 loading={loading}
                 components={{ Toolbar: GridToolbar }}
-                style={{ height: "75vh"}}
+                style={{ height: "75vh" }}
             />
             <ModalComponent open={openViewPatientModal} close={() => handleCloseViewPatientModal()}>
                 <ViewPatientModal patientID={targetPatientID} />

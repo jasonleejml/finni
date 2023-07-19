@@ -36,6 +36,10 @@ const additionalFieldSchema = new mongoose.Schema({
 })
 
 const patientSchema = new mongoose.Schema({
+    providerID: {
+        type: String,
+        required: true,
+    },
     firstName: { 
         type: String,
         required: true,
