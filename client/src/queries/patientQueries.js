@@ -24,3 +24,32 @@ export const GET_ALL_PATIENTS = gql`
         }
     }
 `;
+
+export const GET_PATIENT = gql`
+    query getPatient(
+        $id: ID!
+    ) {
+        getPatient(
+            id: $id,
+        ) {
+            id,
+            firstName,
+            middleName,
+            lastName,
+            dob,
+            address {
+                id,
+                street1,
+                street2,
+                city,
+                state,
+                zip,
+            },
+            additionalFields {
+                id,
+                title,
+                value,
+            }
+        }
+    }
+`;

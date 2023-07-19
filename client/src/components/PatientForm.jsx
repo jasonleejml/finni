@@ -9,8 +9,9 @@ import moment from "moment";
 import { ADD_PATIENT } from "../mutations/patientMutations";
 import { useMutation } from "@apollo/client";
 import { GET_ALL_PATIENTS } from "../queries/patientQueries";
+import { toast } from "react-toastify";
 
-const initialRequiredFields = [
+export const initialRequiredFields = [
     {
         name: "firstName",
         label: "First Name",
@@ -40,7 +41,7 @@ const initialRequiredFields = [
     }
 ];
 
-const addressFieldsTemplate = [
+export const addressFieldsTemplate = [
     {
         name: "street1",
         label: "Address Line 1",
@@ -79,9 +80,9 @@ const addressFieldsTemplate = [
     },
 ]
 
-export const AddPatientForm = ({ close }) => {
+export const PatientForm = ({ type, close, defaultValues, patientID, update }) => {
     const { control, handleSubmit } = useForm({
-        defaultValues: {
+        defaultValues: defaultValues ?? {
             firstName: "",
             middleName: "",
             lastName: "",
@@ -98,7 +99,10 @@ export const AddPatientForm = ({ close }) => {
     });
 
     const [addPatient] = useMutation(ADD_PATIENT, {
-        onCompleted: () => close(),
+        onCompleted: () => {
+            close();
+            toast.success("Created the new patient successfully!")
+        },
         refetchQueries: [{ query: GET_ALL_PATIENTS }]
     })
 
@@ -113,16 +117,30 @@ export const AddPatientForm = ({ close }) => {
     })
 
     const onSubmit = ({ firstName, middleName, lastName, dob, address, additionalFields }) => {
-        addPatient({
-            variables: {
-                firstName,
-                middleName,
-                lastName,
-                dob: moment(dob).format("YYYY-MM-DD"),
-                address,
-                additionalFields,
-            }
-        });
+        type === "edit"
+            ?
+            update({
+                variables: {
+                    id: patientID,
+                    firstName,
+                    middleName,
+                    lastName,
+                    dob: moment(dob).format("YYYY-MM-DD"),
+                    address,
+                    additionalFields,
+                }
+            })
+            :
+            addPatient({
+                variables: {
+                    firstName,
+                    middleName,
+                    lastName,
+                    dob: moment(dob).format("YYYY-MM-DD"),
+                    address,
+                    additionalFields,
+                }
+            });
     };
 
     // renders the initial required fields like first name and last name
@@ -235,7 +253,7 @@ export const AddPatientForm = ({ close }) => {
 
     return (
         <Box display="flex" flexDirection="column" gap={2}>
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>Add Patient</Typography>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>{type === "edit" ? "Edit Patient" : "Add Patient"}</Typography>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Box sx={{
                     display: "grid",
@@ -303,7 +321,7 @@ export const AddPatientForm = ({ close }) => {
                         Cancel
                     </Button>
                     <Button type="submit" color="success" variant="contained">
-                        Submit
+                        {type === "edit" ? "Save Changes" : "Submit"}
                     </Button>
                 </Box>
             </form>

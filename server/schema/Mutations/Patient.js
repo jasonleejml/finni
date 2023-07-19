@@ -6,6 +6,7 @@ const { stateEnums } = require("../../utils/states");
 const AdditionalFieldInputType = new GraphQLInputObjectType({
     name: "AdditionalFieldInput",
     fields: () => ({
+        id: { type: GraphQLID },
         title: { type: new GraphQLNonNull(GraphQLString) },
         value: { type: new GraphQLNonNull(GraphQLString) },
     })
@@ -14,6 +15,7 @@ const AdditionalFieldInputType = new GraphQLInputObjectType({
 const AddressInputType = new GraphQLInputObjectType({
     name: "AddressInputType",
     fields: () => ({
+        id: { type: GraphQLID },
         street1: { type: new GraphQLNonNull(GraphQLString) },
         street2: { type: GraphQLString },
         city: { type: new GraphQLNonNull(GraphQLString) },

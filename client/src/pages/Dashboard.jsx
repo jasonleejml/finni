@@ -6,7 +6,7 @@ import { GET_ALL_PATIENTS } from "../queries/patientQueries";
 import PeopleIcon from '@mui/icons-material/People';
 import { IconWrapper } from "../components/IconWrapper";
 import { ModalComponent } from "../components/Modal";
-import { AddPatientForm } from "../components/AddPatientForm";
+import { PatientForm } from "../components/PatientForm";
 
 export const Dashboard = () => {
     const [openAddPatientModal, setOpenAddPatientModal] = useState(false);
@@ -41,7 +41,7 @@ export const Dashboard = () => {
                 </Box>
             </Box>
             <ModalComponent open={openAddPatientModal} close={() => handleCloseAddPatientModal()}>
-                <AddPatientForm close={() => handleCloseAddPatientModal()} />
+                <PatientForm type="add" close={() => handleCloseAddPatientModal()} />
             </ModalComponent>
         </>
     )

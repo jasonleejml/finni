@@ -1,31 +1,46 @@
+import React, { useState } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Box, Avatar, Typography } from "@mui/material";
-import moment from "moment";
-import { stringToColor } from "./utils/stringToColor";
+import { Box, Typography, IconButton } from "@mui/material";
 import { addressFormat } from "./utils/addressFormat";
-
-const stringAvatar = (name) => (
-    {
-        sx: {
-          bgcolor: stringToColor(name),
-        },
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-    }
-);
+import { nameFormat } from "./utils/nameFormat";
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { ModalComponent } from "./Modal";
+import { ViewPatientModal } from "./ViewPatientModal"
+import { AvatarComponent } from "./Avatar";
+import { convertTimestampToUTC } from "./utils/convertTimestampToUTC";
+import { DELETE_PATIENT } from "../mutations/patientMutations";
+import { useMutation } from "@apollo/client";
+import { GET_ALL_PATIENTS } from "../queries/patientQueries";
+import { toast } from "react-toastify";
 
 const renderHeader = (params) => (
     <Typography sx={{ fontWeight: 'bold' }}>{params}</Typography>
 );
 
 export const Table = ({ data, loading }) => {
+    const [openViewPatientModal, setOpenViewPatientModal] = useState(false);
+    const [targetPatientID, setTargetPatientID] = useState("");
+
+    const [deletePatient] = useMutation(DELETE_PATIENT, {
+        onCompleted: () => toast.success("Deleted the patient successfully!"),
+        refetchQueries: [{ query: GET_ALL_PATIENTS }]
+    })
+
+    const handlePatientModal = (id) => {
+        setTargetPatientID(id);
+        setOpenViewPatientModal(true);
+    };
+    const handleCloseViewPatientModal = () => setOpenViewPatientModal(false);
+
     const columns = [
         {
             field: "Avatar",
             headerName: "",
             renderCell: ({ row: { firstName, lastName } }) => {
-                const fullName = `${firstName} ${lastName}`;
+                const fullName = nameFormat({ firstName, lastName })
                 return (
-                    <Avatar {...stringAvatar(fullName)}/>
+                    <AvatarComponent name={fullName} />
                 )
             }
         },
@@ -61,10 +76,10 @@ export const Table = ({ data, loading }) => {
                 return renderHeader('Date of Birth');
             },
             valueGetter: (params) => {
-                const date = new Date(parseInt(params.value));
-                const formattedDate = moment.utc(date).format("MMMM D, YYYY");
-                
-                return formattedDate;
+                return convertTimestampToUTC({
+                    timestamp: params.value,
+                    format: "MMMM D, YYYY",
+                })
             },
         },
         {
@@ -82,11 +97,11 @@ export const Table = ({ data, loading }) => {
         {
             field: "address.city",
             headerName: "City",
-            flex: 0.5,
+            flex: 0.3,
             renderHeader: () => {
                 return renderHeader('City');
             },
-            valueGetter: ({ row: { address }}) => {
+            valueGetter: ({ row: { address } }) => {
                 const primaryAddress = address[0];
                 return primaryAddress.city
             }
@@ -98,7 +113,7 @@ export const Table = ({ data, loading }) => {
             renderHeader: () => {
                 return renderHeader('State');
             },
-            valueGetter: ({ row: { address }}) => {
+            valueGetter: ({ row: { address } }) => {
                 const primaryAddress = address[0];
                 return primaryAddress.state
             }
@@ -110,10 +125,35 @@ export const Table = ({ data, loading }) => {
             renderHeader: () => {
                 return renderHeader('Zip');
             },
-            valueGetter: ({ row: { address }}) => {
+            valueGetter: ({ row: { address } }) => {
                 const primaryAddress = address[0];
                 return primaryAddress.zip
             }
+        },
+        {
+            headerName: "Actions",
+            flex: 0.5,
+            renderHeader: () => {
+                return renderHeader('Actions');
+            },
+            renderCell: ({ row }) => (
+                <Box>
+                    <IconButton
+                        onClick={() => handlePatientModal(row.id)}
+                    >
+                        <MedicalInformationIcon />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => deletePatient({
+                            variables: {
+                                id: row.id,
+                            }
+                        })}
+                    >
+                        <DeleteIcon />
+                    </IconButton>
+                </Box>
+            )
         }
     ]
 
@@ -127,13 +167,17 @@ export const Table = ({ data, loading }) => {
                 backgroundColor: "#f4cfb4",
                 borderBottom: "none",
             }
-            }}>
+        }}>
             <DataGrid
                 rows={data ?? []}
                 columns={columns}
                 loading={loading}
                 components={{ Toolbar: GridToolbar }}
+                style={{ height: "75vh"}}
             />
+            <ModalComponent open={openViewPatientModal} close={() => handleCloseViewPatientModal()}>
+                <ViewPatientModal patientID={targetPatientID} />
+            </ModalComponent>
         </Box>
     )
 }

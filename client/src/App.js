@@ -5,10 +5,14 @@ import { Sidebar } from "./components/Sidebar";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const client = new ApolloClient({
   uri: "http://localhost:8080/graphql",
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    addTypename: false
+  }),
 });
 
 export const App = () => {
@@ -24,6 +28,7 @@ export const App = () => {
                 <Route path="/settings" element={<Settings />} />
               </Routes>
             </main>
+            <ToastContainer />
           </div>
         </ApolloProvider>
       </LocalizationProvider>
