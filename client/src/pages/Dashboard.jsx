@@ -7,8 +7,10 @@ import PeopleIcon from '@mui/icons-material/People';
 import { IconWrapper } from "../components/IconWrapper";
 import { ModalComponent } from "../components/Modal";
 import { PatientForm } from "../components/PatientForm";
+import { withAuthenticationRequired } from "@auth0/auth0-react";
+import CircularProgress from '@mui/material/CircularProgress';
 
-export const Dashboard = () => {
+const Dashboard = () => {
     const [openAddPatientModal, setOpenAddPatientModal] = useState(false);
     const { loading, data } = useQuery(GET_ALL_PATIENTS);
 
@@ -16,7 +18,7 @@ export const Dashboard = () => {
 
     return (
         <>
-            <Box display="flex" flexDirection="column" sx={{ p: 4 }}>
+            <Box display="flex" flexDirection="column" sx={{ width: "100%", p: 4 }}>
                 <Box display="flex" alignItems="center">
                     <IconWrapper>
                         <PeopleIcon fontSize="large" />
@@ -44,5 +46,9 @@ export const Dashboard = () => {
                 <PatientForm type="add" close={() => handleCloseAddPatientModal()} />
             </ModalComponent>
         </>
-    )
+    );
 }
+
+export default withAuthenticationRequired(Dashboard, {
+    onRedirecting: () => <CircularProgress />
+});

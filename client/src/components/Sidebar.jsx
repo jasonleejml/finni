@@ -6,9 +6,11 @@ import PeopleIcon from '@mui/icons-material/People';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Theme } from "../theme";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const Sidebar = () => {
     const navigate = useNavigate();
+    const { logout } = useAuth0();
     return (
         <Box 
             display="flex" 
@@ -21,14 +23,14 @@ export const Sidebar = () => {
         >
             <Box display="flex" flexDirection="column" width="100%" alignItems="center">
                 <Avatar alt="Finni Health" src="logo.png" sx={{ p: 2, width: "80px", height: "80px", borderRadius: "20px" }}/>
-                <IconWrapper onClick={() => navigate("/")}>
+                <IconWrapper onClick={() => navigate("/dashboard")}>
                     <PeopleIcon fontSize="large"/>
                 </IconWrapper>
                 <IconWrapper onClick={() => navigate("/settings")}>
                     <SettingsIcon fontSize="large"/>
                 </IconWrapper>
             </Box>
-            <IconWrapper onClick={() => console.log('bye')}>
+            <IconWrapper onClick={logout}>
                 <LogoutIcon fontSize="large"/>
             </IconWrapper>
         </Box>
