@@ -1,5 +1,11 @@
 export const addressFormat = (address) => {
     const { street1, street2, city, state, zip } = address;
 
-    return `${street1}${ street2 ?? ""}, ${city}, ${state} ${zip}`
+    let fullAddress = street1;
+    if (street2) {
+        fullAddress += ' ' + street2;
+    }
+
+    fullAddress += ', ' + city + ', ' + state + ' ' + zip;
+    return fullAddress;
 }

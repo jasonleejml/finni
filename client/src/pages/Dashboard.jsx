@@ -1,25 +1,48 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Typography, Button } from "@mui/material";
 import { Table } from "../components/Table";
 import { useQuery } from "@apollo/client";
-import { GET_ALL_PATIENTS } from "../queries/patient";
+import { GET_ALL_PATIENTS } from "../queries/patientQueries";
 import PeopleIcon from '@mui/icons-material/People';
 import { IconWrapper } from "../components/IconWrapper";
+import { ModalComponent } from "../components/Modal";
+import { AddPatientForm } from "../components/AddPatientForm";
 
 export const Dashboard = () => {
-    const { loading, error, data } = useQuery(GET_ALL_PATIENTS);
+    const [openAddPatientModal, setOpenAddPatientModal] = useState(false);
+    const { loading, data } = useQuery(GET_ALL_PATIENTS);
+
+    const handleCloseAddPatientModal = () => setOpenAddPatientModal(false);
 
     return (
-        <Box display="flex" flexDirection="column" sx={{ p: 2 }}>
-            <Box display="flex" alignItems="center">
-                <IconWrapper>
-                    <PeopleIcon fontSize="large"/>
-                </IconWrapper>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                  Patients
-                </Typography>
+        <>
+            <Box display="flex" flexDirection="column" sx={{ p: 4 }}>
+                <Box display="flex" alignItems="center">
+                    <IconWrapper>
+                        <PeopleIcon fontSize="large" />
+                    </IconWrapper>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                        Patients
+                    </Typography>
+                </Box>
+                <Box>
+                    <Box
+                        display="flex"
+                        justifyContent="flex-end"
+                    >
+                        <Button
+                            variant="contained"
+                            onClick={() => setOpenAddPatientModal(true)}
+                        >
+                            Add Patient
+                        </Button>
+                    </Box>
+                    <Table data={data?.getAllPatients} loading={loading} />
+                </Box>
             </Box>
-            <Table data={data?.getAllPatients}/>
-        </Box>
+            <ModalComponent open={openAddPatientModal} close={() => handleCloseAddPatientModal()}>
+                <AddPatientForm close={() => handleCloseAddPatientModal()} />
+            </ModalComponent>
+        </>
     )
 }

@@ -17,9 +17,7 @@ const renderHeader = (params) => (
     <Typography sx={{ fontWeight: 'bold' }}>{params}</Typography>
 );
 
-export const Table = ({ data }) => {
-    console.log('this is data: ', data);
-
+export const Table = ({ data, loading }) => {
     const columns = [
         {
             field: "Avatar",
@@ -120,8 +118,7 @@ export const Table = ({ data }) => {
     ]
 
     return (
-        <Box sx={{ 
-            p: 4,
+        <Box sx={{
             "& .MuiDataGrid-root": {
                 border: "none",
             },
@@ -134,6 +131,7 @@ export const Table = ({ data }) => {
             <DataGrid
                 rows={data ?? []}
                 columns={columns}
+                loading={loading}
                 components={{ Toolbar: GridToolbar }}
             />
         </Box>
