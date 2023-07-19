@@ -6,7 +6,7 @@ const style = {
     boxShadow: 24,
     p: 2,
     borderRadius: 2,
-  };
+};
 
 export const ModalComponent = ({ open, close, children }) => {
 

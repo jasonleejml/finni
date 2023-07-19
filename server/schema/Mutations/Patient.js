@@ -19,10 +19,12 @@ const AddressInputType = new GraphQLInputObjectType({
         street1: { type: new GraphQLNonNull(GraphQLString) },
         street2: { type: GraphQLString },
         city: { type: new GraphQLNonNull(GraphQLString) },
-        state: { type: new GraphQLEnumType({
-            name: "StateInput",
-            values: stateEnums,
-        })},
+        state: {
+            type: new GraphQLEnumType({
+                name: "StateInput",
+                values: stateEnums,
+            })
+        },
         zip: { type: new GraphQLNonNull(GraphQLString) },
     })
 })
@@ -72,7 +74,7 @@ const UPDATE_PATIENT = {
         lastName: { type: GraphQLString },
         dob: { type: GraphQLString },
         address: { type: new GraphQLList(AddressInputType) },
-        additionalFields: { type: new GraphQLList(AdditionalFieldInputType)},
+        additionalFields: { type: new GraphQLList(AdditionalFieldInputType) },
     },
     async resolve(parent, args) {
         const { id, firstName, middleName, lastName, dob, address, additionalFields } = args;
